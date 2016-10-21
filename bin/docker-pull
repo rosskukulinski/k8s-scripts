@@ -1,14 +1,44 @@
 #!/bin/bash
 
-if ! hash aws 2>/dev/null; then
-  pip install awscli
-fi
-
-if [ -z "$AWS_ECR_ACCOUNT_ID" ]; then
-	eval $(aws ecr get-login --region $AWS_DEFAULT_REGION)
+if [ -z "$EXTERNAL_REGISTRY_BASE_DOMAIN" ]; then
+  echo "No base domain provided!  Aborting"
+  exit 1
 else
-	eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --registry-ids ${AWS_ECR_ACCOUNT_ID})
-fi
 
+  case $EXTERNAL_REGISTRY_BASE_DOMAIN in
+    *amazonaws.com*)
+      if ! hash aws 2>/dev/null; then
+        pip install awscli
+      fi
+
+      if [ -z "$AWS_ECR_ACCOUNT_ID" ]; then
+        eval $(aws ecr get-login --region $AWS_DEFAULT_REGION)
+      else
+        eval $(aws ecr get-login --region $AWS_DEFAULT_REGION --registry-ids ${AWS_ECR_ACCOUNT_ID})
+      fi
+      ;;
+
+    *gcr.io*)
+      if [ -z "$GCP_PROJECT" || -z "$GCP_CLUSTER"  || -z "$GCP_ZONE"]; then
+        echo "Missing GCP project, cluster, or zone!  Aborting"
+        exit 1
+      fi
+
+      if ! hash pyopenssl 2>/dev/null; then
+        pip install pyopenssl
+      fi
+
+      if [ ! -d ~/google-cloud-sdk ]; then
+        curl https://sdk.cloud.google.com | bash;
+        ~/google-cloud-sdk/bin/gcloud components update #--version 119.0.0
+      fi
+
+      ~/google-cloud-sdk/bin/gcloud config set project $GCP_PROJECT && \
+      ~/google-cloud-sdk/bin/gcloud container clusters get-credentials $GCP_CLUSTER --zone=${GCP_ZONE}
+      ;;
+
+    *quay.io*)
+  esac
+fi
 # this should exit 0 even if the image is not there. For example, on a first run
 docker pull ${EXTERNAL_REGISTRY_BASE_DOMAIN}/${REPOSITORY_NAME}:latest || true
