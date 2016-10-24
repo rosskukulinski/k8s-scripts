@@ -35,7 +35,7 @@ if [ ${#NAMESPACES[@]} == 1 ]; then
           .metadata.creationTimestamp,
           .metadata.generation,
           .metadata.annotations
-      )' > ./cluster-dump/ns.json
+      )' > ./cluster_dump/ns.json
 else
   kubectl get --export -o=json ns ${NAMESPACES[@]} | \
   jq '.items[] |
@@ -48,14 +48,14 @@ else
           .metadata.creationTimestamp,
           .metadata.generation,
           .metadata.annotations
-      )' > ./cluster-dump/ns.json
+      )' > ./cluster_dump/ns.json
 fi
 
 
-for ns in $(jq -r '.metadata.name' < ./cluster-dump/ns.json);do
+for ns in $(jq -r '.metadata.name' < ./cluster_dump/ns.json);do
     echo "Namespace: $ns"
     # excluded: persistentvolume, persistentvolumeclaim, podsecuritypolicy,replicaset,serviceaccount,thirdpartyresource
-    kubectl --namespace="${ns}" get --export -o=json svc,ingress,deployment,configmap,horizontalpodautoscaler,job,limitrange,resourcequota,secret,ds | \
+    kubectl --namespace="${ns}" get --export -o=json resourcequota,limitrange,svc,configmap,secret,ingress,deployment,horizontalpodautoscaler,job,ds | \
     jq '.items[] |
         select(.type!="kubernetes.io/service-account-token") |
         del(
@@ -72,5 +72,5 @@ for ns in $(jq -r '.metadata.name' < ./cluster-dump/ns.json);do
             .spec.template.spec.dnsPolicy,
             .spec.template.spec.terminationGracePeriodSeconds,
             .spec.template.spec.restartPolicy
-        )' >> "./cluster-dump/cluster-dump.json"
+        )' >> "./cluster_dump/cluster_dump.json"
 done
