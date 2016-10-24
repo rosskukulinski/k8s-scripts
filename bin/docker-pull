@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# http://stackoverflow.com/questions/59895/can-a-bash-script-tell-which-directory-it-is-stored-in
+SOURCE="${BASH_SOURCE[0]}"
+while [ -h "$SOURCE" ]; do # resolve $SOURCE until the file is no longer a symlink
+  TARGET="$(readlink "$SOURCE")"
+  if [[ $TARGET == /* ]]; then
+    SOURCE="$TARGET"
+  else
+    DIR="$( dirname "$SOURCE" )"
+    SOURCE="$DIR/$TARGET" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+  fi
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
 if [ -z "$EXTERNAL_REGISTRY_BASE_DOMAIN" ]; then
   echo "No base domain provided!  Aborting"
   exit 1
@@ -7,18 +20,18 @@ else
 
   case $EXTERNAL_REGISTRY_BASE_DOMAIN in
     *amazonaws.com*)
-      bin/registries/docker-pull.ecr.sh ||
+      "${DIR}/registries/docker-pull.ecr.sh" ||
         echo "Could not authenticate." && exit 1
       ;;
 
     *gcr.io*)
-      bin/registries/docker-pull.gcr.sh ||
+      "${DIR}/registries/docker-pull.gcr.sh" ||
         echo "Could not authenticate." && exit 1
       ;;
 
     *quay.io*)
-      bin/registries/docker-pull.quay.sh ||
-        echo "Could not authenticate." && exit 1 
+      "${DIR}/registries/docker-pull.quay.sh" ||
+        echo "Could not authenticate." && exit 1
       ;;
 
   esac
