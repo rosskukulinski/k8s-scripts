@@ -18,5 +18,5 @@ fi
 # cluster connection?
 #~/google-cloud-sdk/bin/gcloud auth activate-service-account $ACCOUNT_EMAIL --key-file $KEYFILE
 ~/google-cloud-sdk/bin/gcloud config set project "${GCP_PROJECT}"
-~/google-cloud-sdk/bin/gcloud config set cluster "${GCP_CLUSTER}"
-~/google-cloud-sdk/bin/gcloud config set zone "${GCP_ZONE}"
+~/google-cloud-sdk/bin/gcloud config set container/cluster "${GCP_CLUSTER}"
+~/google-cloud-sdk/bin/gcloud config set compute/zone "${GCP_ZONE}"
