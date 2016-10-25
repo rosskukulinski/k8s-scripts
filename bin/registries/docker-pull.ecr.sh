@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/bin/bash -e
 
 if ! hash aws 2>/dev/null; then
   pip install awscli
