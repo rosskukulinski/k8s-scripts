@@ -21,17 +21,17 @@ else
   case $EXTERNAL_REGISTRY_BASE_DOMAIN in
     *amazonaws.com*)
       "${DIR}/registries/docker-pull.ecr.sh" ||
-        echo "Could not authenticate." && exit 1
+        { echo "Could not authenticate." && exit 1; }
       ;;
 
     *gcr.io*)
       "${DIR}/registries/docker-pull.gcr.sh" ||
-        echo "Could not authenticate." && exit 1
+        { echo "Could not authenticate." && exit 1; }
       ;;
 
     *quay.io*)
       "${DIR}/registries/docker-pull.quay.sh" ||
-        echo "Could not authenticate." && exit 1
+        { echo "Could not authenticate." && exit 1; }
       ;;
 
   esac
