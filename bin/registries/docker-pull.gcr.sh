@@ -20,3 +20,6 @@ fi
 ~/google-cloud-sdk/bin/gcloud config set project "${GCP_PROJECT}"
 ~/google-cloud-sdk/bin/gcloud config set container/cluster "${GCP_CLUSTER}"
 ~/google-cloud-sdk/bin/gcloud config set compute/zone "${GCP_ZONE}"
+
+# Authorize the docker client to work with GCR
+gcloud docker --authorize-only
