@@ -11,7 +11,7 @@ fi
 
 if [ ! -d ~/google-cloud-sdk ]; then
   curl https://sdk.cloud.google.com | bash;
-  google-cloud-sdk/bin/gcloud components update #--version 119.0.0
+  ~/google-cloud-sdk/bin/gcloud components update #--version 119.0.0
 fi
 
 # TODO: Is this necessary if we have the kube config already set up for
