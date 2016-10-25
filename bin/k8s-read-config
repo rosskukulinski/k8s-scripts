@@ -34,6 +34,15 @@ fi
 echo "[dockerfile]: $DOCKERFILE"
 echo "[dockertag]: $DOCKERTAG"
 
+ARGS=''
+for i in "${BUILD_ARGS[@]}"
+do
+  i=$(eval echo $i)
+  ARGS="--build-arg $i $ARGS"
+done
+BUILD_ARGS=$ARGS
+echo "[build_args]: $BUILD_ARGS"
+
 NAMESPACE=${NAMESPACE:=default}
 echo "[namespace]: $NAMESPACE"
 
