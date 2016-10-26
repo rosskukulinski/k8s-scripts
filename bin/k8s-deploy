@@ -6,7 +6,8 @@ echo "Authing to Google."
 # TODO: This is GKE specific.
 KEYFILE=${HOME}/gcloud-service-key.json
 echo $GCLOUD_SERVICE_KEY | base64 --decode > "${KEYFILE}"
-~/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file "${KEYFILE}"
+export GOOGLE_APPLICATION_CREDENTIALS=$KEYFILE
+#~/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file "${KEYFILE}"
 
 echo "Deploying ConfigMaps"
 for index in "${!CONFIGMAP_FILES[@]}"; do
