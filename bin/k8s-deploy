@@ -2,6 +2,7 @@
 
 . k8s-read-config
 
+echo "Authing to Google."
 # TODO: This is GKE specific.
 KEYFILE=${HOME}/gcloud-service-key.json
 echo $GCLOUD_SERVICE_KEY | base64 --decode > "${KEYFILE}"
