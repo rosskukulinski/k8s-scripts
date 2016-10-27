@@ -19,6 +19,7 @@ fi
 
 KEYFILE=${HOME}/gcloud-service-key.json
 echo $GCLOUD_SERVICE_KEY | base64 --decode > "${KEYFILE}"
+export GOOGLE_APPLICATION_CREDENTIALS=$KEYFILE
 ~/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file "${KEYFILE}"
 
 ~/google-cloud-sdk/bin/gcloud config set project "${GCP_PROJECT}"
