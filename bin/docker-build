@@ -3,6 +3,8 @@
 . k8s-read-config "$@"
 
 echo "Building $DOCKERTAG from $BASEDIR/$DOCKERFILE"
+echo "Build args: $BUILD_ARGS"
+echo ${BUILD_ARGS}
 docker build --rm=false -t $DOCKERTAG -f ${BASEDIR}/$DOCKERFILE --build-arg $BUILD_ARGS ${BASEDIR}
 if [ $? -ne 0 ]
 then
