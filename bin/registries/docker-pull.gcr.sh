@@ -10,7 +10,7 @@ if ! hash pyopenssl 2>/dev/null; then
 fi
 
 if [ ! -d ./google-cloud-sdk ]; then
-  curl https://sdk.cloud.google.com | sudo bash;
+  curl https://sdk.cloud.google.com | bash;
   ~/google-cloud-sdk/bin/gcloud components update #--version 119.0.0
 fi
 
