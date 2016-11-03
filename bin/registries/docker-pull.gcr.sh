@@ -9,20 +9,8 @@ if ! hash pyopenssl 2>/dev/null; then
   pip install pyopenssl
 fi
 
-#if [ ! -d ~/google-cloud-sdk ]; then
-#  curl https://sdk.cloud.google.com | bash;
-#  ~/google-cloud-sdk/bin/gcloud components update #--version 119.0.0
-#fi
-
-#KEYFILE=${HOME}/gcloud-service-key.json
-#echo $GCLOUD_SERVICE_KEY | base64 --decode > "${KEYFILE}"
-#~/google-cloud-sdk/bin/gcloud auth activate-service-account --key-file "${KEYFILE}"
-
-#~/google-cloud-sdk/bin/gcloud config set project "${GCP_PROJECT}"
-#~/google-cloud-sdk/bin/gcloud config set container/cluster "${GCP_CLUSTER}"
-#~/google-cloud-sdk/bin/gcloud config set compute/zone "${GCP_ZONE}"
-
-
+# This could be moved in large part to the "pre" step, but not entirely.
+# Leaving it here gives us the flexibility to do cluster/project based on branch.
 KEYFILE=${HOME}/gcloud-service-key.json
 echo $GCLOUD_SERVICE_KEY | base64 --decode > "${KEYFILE}"
 gcloud auth activate-service-account --key-file "${KEYFILE}"
