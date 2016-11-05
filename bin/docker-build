@@ -3,7 +3,12 @@
 . k8s-read-config "$@"
 
 echo "Building $DOCKERTAG from $BASEDIR/$DOCKERFILE"
-docker build --rm=false -t $DOCKERTAG -f ${BASEDIR}/$DOCKERFILE ${BASEDIR}
+if [ -z "$BUILD_ARGS" ]; then
+	docker build --rm=false -t $DOCKERTAG -f ${BASEDIR}/$DOCKERFILE ${BASEDIR}
+else
+	docker build $BUILD_ARGS --rm=false -t $DOCKERTAG -f ${BASEDIR}/$DOCKERFILE ${BASEDIR}
+fi
+
 if [ $? -ne 0 ]
 then
   echo "Docker build failed! Aborting"
