@@ -1,0 +1,76 @@
+#!/bin/bash -e
+
+rm -Rf ./cluster_dump
+mkdir -p ./cluster_dump
+
+
+# Look if the user has passed in one or more namespaces with the -n option
+while getopts "n:" opt; do
+    case $opt in
+        n) NAMESPACES+=("$OPTARG");;
+        \?)
+          echo "Invalid option: -$OPTARG" >&2
+          exit 1
+          ;;
+    esac
+done
+
+if [ -n "${NAMESPACES}" ]
+then
+  echo "Namespaces defined via args: ${NAMESPACES[@]}"
+else
+  NAMESPACES=($(kubectl get -o json ns | jq -r '.items[].metadata.name'))
+  echo "All namespaces retrieved from cluster: ${NAMESPACES[@]}"
+fi
+
+if [ ${#NAMESPACES[@]} == 1 ]; then
+  kubectl get --export -o=json ns ${NAMESPACES[@]} | \
+  jq '. |
+      select(.metadata.name!="kube-system") |
+      select(.metadata.name!="default") |
+      del(.status,
+          .metadata.uid,
+          .metadata.selfLink,
+          .metadata.resourceVersion,
+          .metadata.creationTimestamp,
+          .metadata.generation,
+          .metadata.annotations
+      )' > ./cluster_dump/ns.json
+else
+  kubectl get --export -o=json ns ${NAMESPACES[@]} | \
+  jq '.items[] |
+      select(.metadata.name!="kube-system") |
+      select(.metadata.name!="default") |
+      del(.status,
+          .metadata.uid,
+          .metadata.selfLink,
+          .metadata.resourceVersion,
+          .metadata.creationTimestamp,
+          .metadata.generation,
+          .metadata.annotations
+      )' > ./cluster_dump/ns.json
+fi
+
+
+for ns in $(jq -r '.metadata.name' < ./cluster_dump/ns.json);do
+    echo "Namespace: $ns"
+    # excluded: persistentvolume, persistentvolumeclaim, podsecuritypolicy,replicaset,serviceaccount,thirdpartyresource
+    kubectl --namespace="${ns}" get --export -o=json resourcequota,limitrange,svc,configmap,secret,ingress,deployment,horizontalpodautoscaler,job,ds | \
+    jq '.items[] |
+        select(.type!="kubernetes.io/service-account-token") |
+        del(
+            .spec.clusterIP,
+            .metadata.uid,
+            .metadata.selfLink,
+            .metadata.resourceVersion,
+            .metadata.creationTimestamp,
+            .metadata.generation,
+            .metadata.annotations,
+            .status,
+            .spec.template.creationTimestamp,
+            .spec.template.spec.securityContext,
+            .spec.template.spec.dnsPolicy,
+            .spec.template.spec.terminationGracePeriodSeconds,
+            .spec.template.spec.restartPolicy
+        )' >> "./cluster_dump/cluster_dump.json"
+done

@@ -1,0 +1,2 @@
+kubectl create -f cluster_dump/ns.json --record
+kubectl create -f cluster_dump/cluster_dump.json --record
