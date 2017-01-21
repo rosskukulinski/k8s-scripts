@@ -1,0 +1,75 @@
+{
+  "kind": "Deployment",
+  "apiVersion": "extensions/v1beta1",
+  "metadata": {
+    "namespace": "kube-system",
+    "name": "slack-event-bot",
+    "labels": {
+      "app": "slack-event-bot"
+    }
+  },
+  "spec": {
+    "replicas": 1,
+    "selector": {
+      "matchLabels": {
+        "app": "slack-event-bot"
+      }
+    },
+    "template": {
+      "metadata": {
+        "name": "slack-event-bot",
+        "namespace": "kube-system",
+        "creationTimestamp": null,
+        "labels": {
+          "app": "slack-event-bot"
+        }
+      },
+      "spec": {
+        "containers": [
+          {
+            "name": "slack8s",
+            "image": "rosskukulinski/slack8s",
+            "env": [
+              {
+                "name": "SLACK_TOKEN",
+                "valueFrom": {
+                  "configMapKeyRef": {
+                    "name": "slack-event-bot",
+                    "key": "slack-token"
+                  }
+                }
+              },
+              {
+                "name": "SLACK_CHANNEL",
+                "valueFrom": {
+                  "configMapKeyRef": {
+                    "name": "slack-event-bot",
+                    "key": "slack-channel"
+                  }
+                }
+              }
+            ],
+            "resources": {},
+            "terminationMessagePath": "/dev/termination-log",
+            "imagePullPolicy": "Always"
+          },
+          {
+            "name": "kube-proxy",
+            "image": "gcr.io/google_containers/kubectl:v0.18.0-120-gaeb4ac55ad12b1-dirty",
+            "args": [
+              "proxy",
+              "-p",
+              "8001"
+            ],
+            "resources": {},
+            "terminationMessagePath": "/dev/termination-log",
+            "imagePullPolicy": "Always"
+          }
+        ]
+      }
+    },
+    "strategy": {
+      "type": "Recreate"
+    }
+  }
+}

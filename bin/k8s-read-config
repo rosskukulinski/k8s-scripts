@@ -78,3 +78,12 @@ do
 done
 echo "[deployment_files]: $DEPLOYMENT_FILES"
 echo ""
+
+echo "[hpas]: $HPAS"
+HPA_FILES=()
+for i in "${HPAS[@]}"
+do
+  HPA_FILES+=($BASEDIR/deploy/$i.hpa.yml)
+done
+echo "[hpa_files]: $HPA_FILES"
+echo ""

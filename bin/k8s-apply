@@ -33,6 +33,16 @@ done
 echo "Done updating Deployments"
 echo ""
 
+echo "Updating Horizontal Pod Autoscaling"
+for index in "${!HPA_FILES[@]}"
+do
+  DEPLOYMENT_FILE=${HPA_FILES[$index]}
+  echo "Updating $HPA_FILE"
+  kubectl apply -f $HPA_FILE --namespace=$NAMESPACE
+done
+echo "Done updating Deployments"
+echo ""
+
 echo "Verifying successful deployments"
 for index in "${!DEPLOYMENTS[@]}"
 do
@@ -51,6 +61,8 @@ do
     exit $result
   fi
 done
+
+
 
 echo "All objects created"
 echo ""
