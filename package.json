@@ -23,7 +23,8 @@
     "docker-push": "./bin/docker-push",
     "docker-pull": "./bin/docker-pull",
     "cluster-dump": "./bin/cluster-dump",
-    "cluster-restore": "./bin/cluster-restore"
+    "cluster-restore": "./bin/cluster-restore",
+    "debug-deployment": "./bin/debug-deployment"
   },
   "author": "Ross Kukulinski <ross@kukulinski.com>",
   "license": "MIT",
