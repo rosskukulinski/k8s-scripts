@@ -51,6 +51,13 @@ printf "> kubectl get pods  --namespace=${NAMESPACE} -l pod-template-hash=${POD_
 kubectl get pods --namespace=${NAMESPACE} -l pod-template-hash=${POD_HASH}
 
 printf "\n\n------------------------------\n\n"
+
+printf "Detailed pods for this deployment:\n\n"
+
+printf "> kubectl describe pods  --namespace=${NAMESPACE} -l pod-template-hash=${POD_HASH}\n\n"
+kubectl describe pods --namespace=${NAMESPACE} -l pod-template-hash=${POD_HASH}
+
+printf "\n\n------------------------------\n\n"
 printf "Containers that are currently 'waiting':\n\n"
 printf "> kubectl get pods --namespace=${NAMESPACE} -l pod-template-hash=${POD_HASH} -o jsonpath='...'\n"
 kubectl get pods --namespace=${NAMESPACE} -l pod-template-hash=${POD_HASH} -o jsonpath='{"\n"}{range .items[*]}{@.metadata.name}:{"\n"}{range @.status.conditions[*]}{"\t"}{@.lastTransitionTime}: {@.type}={@.status}{"\n"}{end}{"\n"}{"\tWaiting Containers\n"}{range @.status.containerStatuses[?(@.state.waiting)]}{"\t\tName: "}{@.name}{"\n\t\tImage: "}{@.image}{"\n\t\tState: Waiting"}{"\n\t\tMessage: "}{@.state.waiting.message}{"\n\t\tReason: "}{@.state.waiting.reason}{end}{"\n"}{end}'
