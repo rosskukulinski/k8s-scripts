@@ -73,4 +73,4 @@ printf "\n\n------------------------------\n\n"
 
 printf "Trying to get previous logs from each Terminated pod\n\n"
 
-kubectl get pods --namespace=${NAMESPACE} -l pod-template-hash=${POD_HASH} --no-headers | awk '{print $1}' | xargs -I pod sh -c "printf \"pod\n\n\"; kubectl --namespace=${NAMESPACE} logs --previous --tail=10 --timestamps pod; printf \"\n\n\""
+kubectl get pods --namespace=${NAMESPACE} -l pod-template-hash=${POD_HASH} --no-headers | awk '{print $1}' | xargs -I pod sh -c "printf \"pod\n\n\"; kubectl --namespace=${NAMESPACE} logs --previous --tail=100 --timestamps pod; printf \"\n\n\""
