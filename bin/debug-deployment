@@ -21,14 +21,14 @@ printf "\n\n------------------------------\n\n"
 CURRENT_GEN=$(kubectl get deployment ${DEPLOY} --namespace=${NAMESPACE} -o jsonpath='{.metadata.generation}')
 OBS_GEN=$(kubectl get deployment ${DEPLOY} --namespace=${NAMESPACE} -o jsonpath='{.status.observedGeneration}')
 REPLICAS=$(kubectl get deployment ${DEPLOY} --namespace=${NAMESPACE} -o jsonpath='{.status.replicas}')
-UPDATED_REPLIACS=$(kubectl get deployment ${DEPLOY} --namespace=${NAMESPACE} -o jsonpath='{.status.updatedReplicas}')
+UPDATED_REPLICAS=$(kubectl get deployment ${DEPLOY} --namespace=${NAMESPACE} -o jsonpath='{.status.updatedReplicas}')
 AVAILABLE_REPLICAS=$(kubectl get deployment ${DEPLOY} --namespace=${NAMESPACE} -o jsonpath='{.status.availableReplicas}')
 
 if [ "$AVAILABLE_REPLICAS" == "$REPLICAS" ] && \
-   [ "$UPDATED_REPLIACS" == "$REPLICAS" ] ; then
+   [ "$UPDATED_REPLICAS" == "$REPLICAS" ] ; then
 
   printf "Available Replicas (${AVAILABLE_REPLICAS}) equals Current Replicas (${REPLICAS}) \n"
-  printf "Updated Replicas (${UPDATED_REPLIACS}) equals Current Replicas (${REPLICAS}). \n"
+  printf "Updated Replicas (${UPDATED_REPLICAS}) equals Current Replicas (${REPLICAS}). \n"
   printf "Are you sure the deploy failed?\n\n"
   exit 0
 fi
@@ -37,8 +37,8 @@ if [ "$AVAILABLE_REPLICAS" != "$REPLICAS" ] ; then
   printf "Available Replicas (${AVAILABLE_REPLICAS}) does not equal Current Replicas (${REPLICAS}) \n"
 fi
 
-if [ "$UPDATED_REPLIACS" != "$REPLICAS" ] ; then
-  printf "Updated Replicas (${UPDATED_REPLIACS}) does not equal Current Replicas (${REPLICAS}) \n"
+if [ "$UPDATED_REPLICAS" != "$REPLICAS" ] ; then
+  printf "Updated Replicas (${UPDATED_REPLICAS}) does not equal Current Replicas (${REPLICAS}) \n"
 fi
 
 printf "\n\n------------------------------\n\n"
